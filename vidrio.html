@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Vidrios - VIDRIERÍA UNIVERSAL</title>
+    
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet" />
+    <link href="css/styles.css" rel="stylesheet" />
+    
+    <style>
+        body {
+            background-color: #000;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 50%, #000 100%), 
+                        url("assets/img/bg-masthead.jpg");
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            font-family: 'Varela Round', sans-serif;
+        }
+
+        header.masthead {
+            background: transparent !important;
+            height: 25vh !important;
+            min-height: 200px !important;
+            padding-top: 80px !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        header.masthead h1 {
+            font-size: 4rem !important;
+            letter-spacing: 0.5rem;
+            margin-top: 20px !important; 		/* <--- CAMBIA ESTO PARA SUBIR O BAJAR EL TÍTULO */
+            position: relative;
+            z-index: 50;
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.2));
+            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .card-custom { 
+            background: rgba(0, 0, 0, 0.85) !important; 
+            border: 1px solid rgba(255, 255, 255, 0.1) !important; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            color: white !important;
+        }
+
+        .section-subida {
+            margin-top: -0px !important; 		/* <--- CAMBIA ESTO PARA ACERCAR O ALEJAR EL CUADRO DEL TÍTULO */
+            position: relative;
+            z-index: 10;
+            padding-bottom: 5rem;
+        }
+
+        .btn-primary { background-color: #64a19d; border-color: #64a19d; }
+        .btn-outline-primary { color: #64a19d; border-color: #64a19d; }
+        .btn-check:checked + .btn-outline-primary { background-color: #64a19d !important; color: white !important; }
+        
+        /* Estilos específicos para modos de venta */
+        .btn-outline-warning { color: #ffc107; border-color: #ffc107; }
+        .btn-check:checked + .btn-outline-warning { background-color: #ffc107 !important; color: black !important; }
+        .btn-outline-info { color: #0dcaf0; border-color: #0dcaf0; }
+        .btn-check:checked + .btn-outline-info { background-color: #0dcaf0 !important; color: black !important; }
+
+        .form-control { background-color: #1a1a1a !important; border: 1px solid #333 !important; color: white !important; }
+        
+        .resumen-seccion { margin-bottom: 1.5rem; }
+        .resumen-titulo { 
+            font-size: 0.8rem; 
+            color: #64a19d; 
+            border-bottom: 1px solid #333; 
+            padding-bottom: 3px; 
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #64a19d; border-radius: 10px; }
+    </style>
+</head>
+<body id="page-top">
+
+    <div id="contenedor-menu"></div>
+
+    <header class="masthead">
+        <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+            <div class="text-center">
+                <h1 class="mx-auto my-0 text-uppercase">Vidrios</h1>
+            </div>
+        </div>
+    </header>
+
+    <section class="container px-4 px-lg-5 section-subida">
+        <div class="row gx-5">
+            <div class="col-md-6 mb-4">
+                <div class="card card-custom p-4 shadow">
+                    <h4 class="text-white text-center mb-4">Configurar Vidrio</h4>
+                    
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label text-white-50 small">Altura (cm):</label>
+                            <input type="number" class="form-control form-control-lg" id="altura" placeholder="0">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label text-white-50 small">Ancho (cm):</label>
+                            <input type="number" class="form-control form-control-lg" id="ancho" placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-white-50 small d-block mb-2">Cantidad de vidrios:</label>
+                        <input type="number" class="form-control form-control-lg" id="cantidad" placeholder="1" min="1">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-white-50 small d-block mb-3">Modo de Venta:</label>
+                        <div class="d-flex gap-2">
+                            <input type="radio" class="btn-check" name="modoVenta" id="modoReparacion" value="reparacion" checked onchange="actualizarPrecios()">
+                            <label class="btn btn-outline-warning btn-sm w-50" for="modoReparacion">🛠️ Reparación</label>
+
+                            <input type="radio" class="btn-check" name="modoVenta" id="modoVentaSolo" value="solo" onchange="actualizarPrecios()">
+                            <label class="btn btn-outline-info btn-sm w-50" for="modoVentaSolo">📦 Solo Vidrio</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-white-50 small d-block mb-3">Seleccione Tipo:</label>
+                        <div class="d-flex flex-wrap gap-2" id="contenedorVidrios">
+                            </div>
+                    </div>
+
+                    <div class="text-center mb-4">
+                        <h5 class="text-white bg-black p-3 rounded border border-secondary" id="resultado">Costo: S/. 0.00</h5>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button class="btn btn-primary btn-lg text-uppercase fw-bold" onclick="guardar()">Añadir a Lista</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card card-custom p-4 shadow h-100">
+                    <h4 class="text-white text-center mb-4">Resumen de Medidas</h4>
+                    <div style="max-height: 500px; overflow-y: auto;" class="px-2">
+                        
+                        <div class="resumen-seccion">
+                            <div class="resumen-titulo">Vidrios Triples</div>
+                            <ul id="listaTriple" class="list-unstyled text-white-50 small mb-2"></ul>
+                        </div>
+
+                        <div class="resumen-seccion">
+                            <div class="resumen-titulo">Vidrios Dobles</div>
+                            <ul id="listaDoble" class="list-unstyled text-white-50 small mb-2"></ul>
+                        </div>
+
+                        <div class="resumen-seccion">
+                            <div class="resumen-titulo">Catedrales</div>
+                            <ul id="listaCatedral" class="list-unstyled text-white-50 small mb-2"></ul>
+                        </div>
+
+                        <div class="resumen-seccion">
+                            <div class="resumen-titulo">Espejos</div>
+                            <ul id="listaEspejo" class="list-unstyled text-white-50 small mb-2"></ul>
+                        </div>
+
+                    </div>
+                    <div class="mt-auto pt-3 border-top border-secondary text-center">
+                        <h4 id="totalAcumulado" class="text-white fw-bold">Total: S/. 0.00</h4>
+                        <button class="btn btn-sm btn-link text-danger mt-2 text-decoration-none" onclick="limpiar()">BORRAR TODO</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="contenedor-footer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="menu-dinamico.js"></script>
+    <script src="footer-dinamico.js"></script>
+
+    <script>
+        let datos = { Triple: [], Doble: [], Catedral: [], Espejo: [] };
+
+        function obtenerPreciosConfig() {
+            return {
+                reparacion: {
+                    triple: parseFloat(localStorage.getItem('precio_vr1')) || 9,
+                    doble: parseFloat(localStorage.getItem('precio_vr2')) || 8,
+                    catedral: parseFloat(localStorage.getItem('precio_vr3')) || 6,
+                    espejo: parseFloat(localStorage.getItem('precio_vr4')) || 7.5
+                },
+                solo: {
+                    triple: parseFloat(localStorage.getItem('precio_vs1')) || 8,
+                    doble: parseFloat(localStorage.getItem('precio_vs2')) || 6,
+                    catedral: parseFloat(localStorage.getItem('precio_vs3')) || 5,
+                    espejo: parseFloat(localStorage.getItem('precio_vs4')) || 6
+                }
+            };
+        }
+
+        function actualizarPrecios() {
+            const modo = document.querySelector('input[name="modoVenta"]:checked').value;
+            const p = obtenerPreciosConfig()[modo];
+            const contenedor = document.getElementById('contenedorVidrios');
+            
+            contenedor.innerHTML = `
+                <input type="radio" class="btn-check" name="tipoVidrio" id="v1" value="${p.triple}" data-cat="Triple" data-nombre="Triple" checked onchange="recalcular()">
+                <label class="btn btn-outline-primary btn-sm" for="v1">Triple (S/. ${p.triple})</label>
+
+                <input type="radio" class="btn-check" name="tipoVidrio" id="v2" value="${p.doble}" data-cat="Doble" data-nombre="Doble" onchange="recalcular()">
+                <label class="btn btn-outline-primary btn-sm" for="v2">Doble (S/. ${p.doble})</label>
+
+                <input type="radio" class="btn-check" name="tipoVidrio" id="v3" value="${p.catedral}" data-cat="Catedral" data-nombre="Catedral" onchange="recalcular()">
+                <label class="btn btn-outline-primary btn-sm" for="v3">Catedral (S/. ${p.catedral})</label>
+
+                <input type="radio" class="btn-check" name="tipoVidrio" id="v4" value="${p.espejo}" data-cat="Espejo" data-nombre="Espejo" onchange="recalcular()">
+                <label class="btn btn-outline-primary btn-sm" for="v4">Espejo (S/. ${p.espejo})</label>
+            `;
+            recalcular();
+        }
+
+        function calcular() {
+            const h = parseFloat(document.getElementById('altura').value);
+            const a = parseFloat(document.getElementById('ancho').value);
+            const seleccionado = document.querySelector('input[name="tipoVidrio"]:checked');
+            
+            // Lógica para Cantidad
+            let cantInput = document.getElementById('cantidad').value;
+            let cantidad = cantInput === "" ? 1 : parseInt(cantInput);
+            if (isNaN(cantidad) || cantidad < 1) cantidad = 1;
+
+            if (!h || !a || h <= 0 || a <= 0 || !seleccionado) return null;
+
+            const precioBase = parseFloat(seleccionado.value);
+            const costoUnitario = ((h * a) / 900) * precioBase;
+            const costoTotal = costoUnitario * cantidad; // Multiplicamos por la cantidad
+            
+            return { 
+                h, a, costo: costoTotal, cantidad,
+                categoria: seleccionado.getAttribute('data-cat'), 
+                nombre: seleccionado.getAttribute('data-nombre') 
+            };
+        }
+
+        function recalcular() {
+            const m = calcular();
+            document.getElementById('resultado').innerHTML = m ? `Costo: S/. ${m.costo.toFixed(2)}` : "Costo: S/. 0.00";
+        }
+
+        document.getElementById('altura').addEventListener('input', recalcular);
+        document.getElementById('ancho').addEventListener('input', recalcular);
+        document.getElementById('cantidad').addEventListener('input', recalcular);
+
+        function guardar() {
+            const m = calcular();
+            if (!m) return;
+            const modoLabel = document.querySelector('input[name="modoVenta"]:checked').value === 'reparacion' ? '🛠️' : '📦';
+            
+            datos[m.categoria].push({...m, icono: modoLabel});
+            actualizarInterfaz();
+            
+            // Retorna el enfoque a la altura para seguir ingresando datos sin borrar nada
+            document.getElementById('altura').focus();
+        }
+
+        function actualizarInterfaz() {
+            ['Triple', 'Doble', 'Catedral', 'Espejo'].forEach(cat => {
+                const ul = document.getElementById(`lista${cat}`);
+                ul.innerHTML = '';
+                datos[cat].forEach((item, i) => {
+                    const li = document.createElement('li');
+                    li.className = "d-flex justify-content-between border-bottom border-dark py-1";
+                    
+                    // Si hay más de 1 cantidad, lo mostramos en la lista de resumen (ej: x3)
+                    const textoCantidad = item.cantidad > 1 ? ` <span class="text-warning">(x${item.cantidad})</span>` : '';
+                    
+                    li.innerHTML = `<span>${i+1}. ${item.icono} ${item.a}x${item.h}cm${textoCantidad}</span> <span>S/. ${item.costo.toFixed(2)}</span>`;
+                    ul.appendChild(li);
+                });
+            });
+            const total = Object.values(datos).flat().reduce((acc, curr) => acc + curr.costo, 0);
+            document.getElementById('totalAcumulado').innerHTML = `Total: S/. ${total.toFixed(2)}`;
+        }
+
+        function limpiar() {
+            if(confirm("¿Vaciar todas las listas?")) {
+                datos = { Triple: [], Doble: [], Catedral: [], Espejo: [] };
+                actualizarInterfaz();
+            }
+        }
+
+        actualizarPrecios();
+    </script>
+</body>
+</html>
