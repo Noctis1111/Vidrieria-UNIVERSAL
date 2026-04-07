@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Editor Pro - Vidriería Universal</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet" />
+    <link href="css/styles.css" rel="stylesheet" />
+
+    <style>
+            body {
+	    display: flex;
+	    flex-direction: column;
+	    min-height: 211vh;
+		}
+		#contenedor-footer {
+		    margin-top: auto;
+		}
+
+        body { background:#f4f6f9; font-family:'Nunito', sans-serif; }
+        .header-espacio { 
+            background:#212529; 
+            padding: 25px;
+        }
+
+        .header-edit { 
+            background:#212529; 
+            color:white; 
+            padding: 20px 20px 0 20px;
+            text-align:center; 
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; 
+        }
+
+        .galeria-grid {
+            display:grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px,1fr));
+            gap:10px;
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 8px;
+        }
+        .thumb {
+            aspect-ratio:1/1;
+            overflow:hidden;
+            border:3px solid transparent;
+            cursor:pointer;
+            transition:0.2s;
+            border-radius: 5px;
+        }
+        .thumb img { width:100%; height:100%; object-fit:cover; }
+        .thumb.active { border:3px solid #0d6efd; transform:scale(1.05); }
+
+        .canvas-container {
+            width:100%;
+            max-width:500px;
+            margin:auto;
+            aspect-ratio:4/3;
+            background:#000;
+            border:3px solid #212529;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .card-control { background:white; padding:25px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.05); }
+        label { font-weight: bold; display: block; margin-top: 15px; }
+        b { color: #0d6efd; float: right; }
+
+        .btn-save {
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="contenedor-menu"></div>
+<div class="header-espacio">
+</div>
+
+<div class="header-edit">
+    <div class="container">
+        <h1 class="text-uppercase fw-bold mb-0">🎯 Editor Canvas Engine</h1>
+        <p class="text-white-50 mb-2">Renderizado de precisión sin saltos de píxel</p>
+    </div>
+</div>
+
+<div class="container mt-5 mb-5">
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card-control mb-4">
+                <h6>1. Selecciona Producto:</h6>
+                <div class="galeria-grid" id="galeria"></div>
+            </div>
+
+            <div class="canvas-container" id="container">
+                <canvas id="editorCanvas"></canvas>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card-control">
+                <h5 class="mb-4 text-primary fw-bold">2. Óptica de Precisión</h5>
+                
+                <label>Zoom / Escala: <b id="valZoom">1.00</b></label>
+                <input type="range" id="zoom" class="form-range" min="0.1" max="5.0" step="0.01" value="1">
+
+                <label>Eje X (Horizontal): <b id="valX">0px</b></label>
+                <input type="range" id="posX" class="form-range" min="-800" max="800" step="1" value="0">
+
+                <label>Eje Y (Vertical): <b id="valY">0px</b></label>
+                <input type="range" id="posY" class="form-range" min="-800" max="800" step="1" value="0">
+
+                <button class="btn btn-outline-secondary w-100 mt-4 mb-3" onclick="resetear()">
+                    <i class="fas fa-sync"></i> Re-centrar Lienzo
+                </button>
+
+                <hr class="my-4">
+
+                <a href="galeria.html" class="btn btn-primary w-100 btn-save shadow">
+                    <i class="fas fa-save me-2"></i> GUARDAR COORDINADAS
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="contenedor-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="menu-dinamico.js"></script>
+<script src="footer-dinamico.js"></script>
+
+<script>
+// FOTOS AGREGADAS: Lista actualizada con los 3 tipos de ventanas
+
+const imagenes = [
+    // ACESORIOS
+    "OBRAS/ACESORIOS/ACESORIOS MANPARAS (1).png",
+    "OBRAS/ACESORIOS/ACESORIOS MANPARAS (2).png",
+    "OBRAS/ACESORIOS/ACESORIOS MANPARAS (3).png",
+    "OBRAS/ACESORIOS/ACESORIOS MANPARAS (4).png",
+    
+    // DUCHAS
+    "OBRAS/DUCHAS/DUCHAS PUERTA (1).jpg",
+    "OBRAS/DUCHAS/DUCHAS PUERTA (2).jpg",
+    "OBRAS/DUCHAS/DUCHAS PUERTA (3).jpg",
+    "OBRAS/DUCHAS/DUCHAS (1).png",
+    "OBRAS/DUCHAS/DUCHAS (2).png",
+    "OBRAS/DUCHAS/DUCHAS (3).png",
+    "OBRAS/DUCHAS/DUCHAS (4).png",
+    "OBRAS/DUCHAS/DUCHAS (5).png",
+    "OBRAS/DUCHAS/DUCHAS (6).png",
+
+    // ESCRITORIOS
+    "OBRAS/ESCRITORIOS/ESCRITORIOS (1).png",
+    "OBRAS/ESCRITORIOS/ESCRITORIOS (2).png",
+    "OBRAS/ESCRITORIOS/ESCRITORIOS (3).png",
+    "OBRAS/ESCRITORIOS/ESCRITORIOS (4).png",
+    "OBRAS/ESCRITORIOS/ESCRITORIOS (5).png",
+    "OBRAS/ESCRITORIOS/ESCRITORIOS (6).png",
+    "OBRAS/ESCRITORIOS/ESCRITORIOS (7).png",
+
+    // MANPARAS
+    "OBRAS/MANPARAS/MANPARA OTROS (1).png",
+    "OBRAS/MANPARAS/MANPARA OTROS (2).png",
+    "OBRAS/MANPARAS/MANPARA OTROS (3).png",
+    "OBRAS/MANPARAS/MANPARA PAFLOM/MANPARA PAFLOM (1).png",
+    "OBRAS/MANPARAS/MANPARA PAFLOM/MANPARA PAFLOM (2).png",
+    "OBRAS/MANPARAS/MANPARA PAFLOM/MANPARA PAFLOM (3).png",
+    "OBRAS/MANPARAS/MANPARA PAFLOM/MANPARA PAFLOM (4).png",
+    "OBRAS/MANPARAS/MANPARA PAFLOM/MANPARA PAFLOM (5).png",
+    "OBRAS/MANPARAS/MANPARA PAFLOM/MANPARA PAFLOM (6).png",
+    "OBRAS/MANPARAS/MANPARA PAFLOM/MANPARA PAFLOM (7).png",
+    "OBRAS/MANPARAS/MANPARA SISTEMA/MANPARA SISTEMA (1).png",
+    "OBRAS/MANPARAS/MANPARA SISTEMA/MANPARA SISTEMA (2).png",
+    "OBRAS/MANPARAS/MANPARA SISTEMA/MANPARA SISTEMA (3).png",
+    "OBRAS/MANPARAS/MANPARA SISTEMA/MANPARA SISTEMA (4).png",
+    "OBRAS/MANPARAS/MANPARA SISTEMA/MANPARA SISTEMA (5).png",
+    "OBRAS/MANPARAS/MANPARA SISTEMA/MANPARA SISTEMA (6).png",
+
+    // PASAMANOS
+    "OBRAS/PASAMANOS/PASAMANOS (1).png",
+    "OBRAS/PASAMANOS/PASAMANOS (2).png",
+    "OBRAS/PASAMANOS/PASAMANOS (3).png",
+
+    // PUERTAS
+    "OBRAS/PUERTAS/PUERTAS (1).png",
+    "OBRAS/PUERTAS/PUERTAS (2).png",
+    "OBRAS/PUERTAS/PUERTAS (3).png",
+    "OBRAS/PUERTAS/PUERTAS (4).png",
+    "OBRAS/PUERTAS/PUERTAS (5).png",
+    "OBRAS/PUERTAS/PUERTAS (6).png",
+    "OBRAS/PUERTAS/PUERTAS (7).png",
+    "OBRAS/PUERTAS/PUERTAS (8).png",
+    "OBRAS/PUERTAS/PUERTAS (9).png",
+    "OBRAS/PUERTAS/PUERTAS (10).png",
+    "OBRAS/PUERTAS/PUERTAS (11).png",
+    "OBRAS/PUERTAS/PUERTAS (12).png",
+    "OBRAS/PUERTAS/PUERTAS (13).png",
+    "OBRAS/PUERTAS/PUERTAS (14).png",
+    "OBRAS/PUERTAS/PUERTAS (15).png",
+    "OBRAS/PUERTAS/PUERTAS (16).png",
+    "OBRAS/PUERTAS/PUERTAS (17).png",
+    "OBRAS/PUERTAS/PUERTAS (18).png",
+    "OBRAS/PUERTAS/PUERTAS (19).png",
+    "OBRAS/PUERTAS/PUERTAS (20).png",
+
+    // VENTANAS
+    "OBRAS/VENTANAS/VENTANA OTROS (1).png",
+    "OBRAS/VENTANAS/VENTANA OTROS (2).png",
+    "OBRAS/VENTANAS/VENTANA OTROS (3).png",
+    "OBRAS/VENTANAS/VENTANA OTROS (4).png",
+    "OBRAS/VENTANAS/VENTANAS CON MARCO/VENTANAS CON MARCO (1).png",
+    "OBRAS/VENTANAS/VENTANAS CON MARCO/VENTANAS CON MARCO (2).png",
+    "OBRAS/VENTANAS/VENTANAS ESTRUCTURA/VENTANAS ESTRUCTURA (1).png",
+    "OBRAS/VENTANAS/VENTANAS ESTRUCTURA/VENTANAS ESTRUCTURA (2).png",
+    "OBRAS/VENTANAS/VENTANAS ESTRUCTURA/VENTANAS ESTRUCTURA (3).png",
+    "OBRAS/VENTANAS/VENTANAS ESTRUCTURA/VENTANAS ESTRUCTURA (4).png",
+    "OBRAS/VENTANAS/VENTANAS ESTRUCTURA/VENTANAS ESTRUCTURA (5).png",
+    "OBRAS/VENTANAS/VENTANAS ESTRUCTURA/VENTANAS ESTRUCTURA 1 (1).jpg",
+    "OBRAS/VENTANAS/VENTANAS ESTRUCTURA/VENTANAS ESTRUCTURA 1 (2).jpg",
+    "OBRAS/VENTANAS/VENTANAS ESTRUCTURA/VENTANAS ESTRUCTURA 1 (3).jpg",
+    "OBRAS/VENTANAS/VENTANAS SISTEMA/VENTANAS SISTEMA (1).png",
+    "OBRAS/VENTANAS/VENTANAS SISTEMA/VENTANAS SISTEMA (2).png",
+    "OBRAS/VENTANAS/VENTANAS SISTEMA/VENTANAS SISTEMA (3).png",
+    "OBRAS/VENTANAS/VENTANAS SISTEMA/VENTANAS SISTEMA (4).png",
+    "OBRAS/VENTANAS/VENTANAS SISTEMA/VENTANAS SISTEMA (5).png"
+];
+
+
+
+const canvas = document.getElementById('editorCanvas');
+const ctx = canvas.getContext('2d');
+const galeria = document.getElementById("galeria");
+
+const zoom = document.getElementById("zoom");
+const posX = document.getElementById("posX");
+const posY = document.getElementById("posY");
+const valZoom = document.getElementById("valZoom");
+const valX = document.getElementById("valX");
+const valY = document.getElementById("valY");
+
+let imgObject = new Image();
+let currentSrc = "";
+
+function initCanvas() {
+    canvas.width = 800; 
+    canvas.height = 600;
+}
+
+imagenes.forEach(src => {
+    const div = document.createElement("div");
+    div.className = "thumb";
+    const imgThumb = document.createElement("img");
+    imgThumb.src = src;
+    div.appendChild(imgThumb);
+    div.onclick = () => cargarImagen(src, div);
+    galeria.appendChild(div);
+});
+
+function cargarImagen(src, el) {
+    currentSrc = src;
+    imgObject.src = src;
+    document.querySelectorAll(".thumb").forEach(t => t.classList.remove("active"));
+    el.classList.add("active");
+
+    imgObject.onload = () => {
+        const data = localStorage.getItem("vidrieria_" + src);
+        if (data) {
+            const d = JSON.parse(data);
+            zoom.value = d.z; posX.value = d.x; posY.value = d.y;
+        } else {
+            zoom.value = 1; posX.value = 0; posY.value = 0;
+        }
+        dibujar();
+    };
+}
+
+function dibujar() {
+    if (!imgObject.complete) return;
+    const z = parseFloat(zoom.value);
+    const x = parseInt(posX.value);
+    const y = parseInt(posY.value);
+
+    valZoom.innerText = z.toFixed(2);
+    valX.innerText = x + "px";
+    valY.innerText = y + "px";
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0,0, canvas.width, canvas.height);
+
+    const aspect = imgObject.width / imgObject.height;
+    let drawW = canvas.width * z;
+    let drawH = (canvas.width / aspect) * z;
+    const drawX = Math.floor((canvas.width - drawW) / 2 + x);
+    const drawY = Math.floor((canvas.height - drawH) / 2 + y);
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(imgObject, drawX, drawY, drawW, drawH);
+
+    if (currentSrc) {
+        localStorage.setItem("vidrieria_" + currentSrc, JSON.stringify({x, y, z}));
+    }
+}
+
+function resetear() {
+    zoom.value = 1; posX.value = 0; posY.value = 0;
+    dibujar();
+}
+
+zoom.addEventListener("input", dibujar);
+posX.addEventListener("input", dibujar);
+posY.addEventListener("input", dibujar);
+
+initCanvas();
+if(imagenes.length > 0) {
+    cargarImagen(imagenes[0], document.querySelector(".thumb"));
+}
+</script>
+</body>
+</html>

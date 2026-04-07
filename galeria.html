@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Galería - VIDRIERÍA UNIVERSAL</title>
+    
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet" />
+    <link href="css/styles.css" rel="stylesheet" />
+
+    <style>
+        .galeria-img-container {
+            width: 100%;
+            aspect-ratio: 4 / 3; 
+            overflow: hidden;    
+            border: 1px solid #dee2e6;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 8px;
+        }
+        
+        .galeria-img-container:hover {
+            border-color: #0d6efd;
+            box-shadow: 0 0 10px rgba(13, 110, 253, 0.2);
+            transform: scale(1.02);
+        }
+
+        .galeria-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .btn-admin {
+            background-color: #212529;
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+        .btn-admin:hover {
+            background-color: #0d6efd;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
+        }
+
+        /* LIGHTBOX Y SUBCATEGORÍAS */
+        .lightbox-overlay {
+            display: none; 
+            position: fixed;
+            z-index: 9999; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-tabs {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+            background: rgba(255,255,255,0.1);
+            padding: 5px;
+            border-radius: 30px;
+            z-index: 10001;
+            max-width: 90%;
+            overflow-x: auto;
+        }
+
+        .lightbox-tab-btn {
+            background: transparent;
+            color: #ccc;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .lightbox-tab-btn:hover { color: #fff; }
+        .lightbox-tab-btn.active {
+            background: #0d6efd;
+            color: #fff;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            object-fit: contain;
+            user-select: none;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10002;
+            transition: 0.2s;
+            line-height: 1;
+        }
+        .lightbox-close:hover { color: #0d6efd; }
+
+        .lightbox-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #fff;
+            font-size: 30px;
+            cursor: pointer;
+            padding: 15px;
+            z-index: 10000;
+            user-select: none;
+            transition: 0.3s;
+            background: rgba(0,0,0,0.4);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .lightbox-btn:hover { background: #0d6efd; }
+        .lightbox-prev { left: 20px; }
+        .lightbox-next { right: 20px; }
+
+        .lightbox-thumbnails {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            max-width: 90%;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            z-index: 10000;
+        }
+
+        .lightbox-thumbnails::-webkit-scrollbar { height: 6px; }
+        .lightbox-thumbnails::-webkit-scrollbar-thumb { background: #0d6efd; border-radius: 10px; }
+        .lightbox-thumbnails::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+        .thumb-mini {
+            height: 70px;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            border-radius: 6px;
+            cursor: pointer;
+            opacity: 0.4;
+            border: 2px solid transparent;
+            transition: 0.3s;
+            flex-shrink: 0;
+        }
+
+        .thumb-mini:hover { opacity: 0.8; }
+        .thumb-mini.active {
+            opacity: 1;
+            border-color: #0d6efd;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .lightbox-btn { font-size: 20px; width: 45px; height: 45px; padding: 10px; }
+            .lightbox-prev { left: 10px; }
+            .lightbox-next { right: 10px; }
+            .thumb-mini { height: 50px; }
+            .lightbox-tabs { top: 10px; max-width: 80%; }
+            .lightbox-close { top: 10px; right: 15px; font-size: 35px; }
+            .lightbox-content { margin-top: 60px; }
+        }
+    </style>
+</head>
+<body id="page-top">
+
+    <div id="contenedor-menu"></div>
+
+    <header class="masthead">
+        <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+            <div class="text-center">
+                <h1 class="mx-auto my-0 text-uppercase">Galería</h1>
+                <a class="btn btn-primary" href="#projects">Ver Trabajos</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="projects-section" id="projects" style="background-color: #000; padding-top: 5rem; padding-bottom: 5rem;">
+        <div class="container px-4 px-lg-5">
+            
+            <div class="row gx-0 mb-4 mb-lg-5">
+                <div class="col-lg-8 bg-primary p-4">
+                    <div class="row">
+                        <div class="col-6 mb-3"><div class="galeria-img-container" onclick="abrirLightbox('ventanas', 'Sistema', 0)"><canvas class="galeria-canvas" data-src="OBRAS/VENTANAS/VENTANAS SISTEMA/VENTANAS SISTEMA (1).png"></canvas></div></div>
+                        <div class="col-6 mb-3"><div class="galeria-img-container" onclick="abrirLightbox('ventanas', 'Estructura', 0)"><canvas class="galeria-canvas" data-src="OBRAS/VENTANAS/VENTANAS ESTRUCTURA/VENTANAS ESTRUCTURA (1).png"></canvas></div></div>
+                        <div class="col-6"><div class="galeria-img-container" onclick="abrirLightbox('ventanas', 'Con Marco', 0)"><canvas class="galeria-canvas" data-src="OBRAS/VENTANAS/VENTANAS CON MARCO/VENTANAS CON MARCO (1).png"></canvas></div></div>
+                        <div class="col-6"><div class="galeria-img-container" onclick="abrirLightbox('ventanas', 'Otros', 0)"><canvas class="galeria-canvas" data-src="OBRAS/VENTANAS/VENTANA OTROS (1).png"></canvas></div></div>
+                    </div>
+                </div>
+                <div class="col-lg-4 bg-secondary d-flex align-items-center">
+                    <div class="p-5 text-center text-lg-left">
+                        <h3 class="text-white text-uppercase">Ventanas</h3>
+                        <p class="text-white-50">Sistemas corredizos, estructuras y con marco.</p>
+                        <button class="btn btn-outline-light mt-3" onclick="abrirLightbox('ventanas', 'Sistema', 0)">Ver Galería</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-0 mb-4 mb-lg-5 flex-lg-row-reverse">
+                <div class="col-lg-8 bg-primary p-4">
+                    <div class="row">
+                        <div class="col-6 mb-3"><div class="galeria-img-container" onclick="abrirLightbox('duchas', 'Duchas', 0)"><canvas class="galeria-canvas" data-src="OBRAS/DUCHAS/DUCHAS PUERTA (1).jpg"></canvas></div></div>
+                        <div class="col-6 mb-3"><div class="galeria-img-container" onclick="abrirLightbox('duchas', 'Duchas', 1)"><canvas class="galeria-canvas" data-src="OBRAS/DUCHAS/DUCHAS PUERTA (2).jpg"></canvas></div></div>
+                        <div class="col-6"><div class="galeria-img-container" onclick="abrirLightbox('duchas', 'Duchas', 3)"><canvas class="galeria-canvas" data-src="OBRAS/DUCHAS/DUCHAS (1).png"></canvas></div></div>
+                        <div class="col-6"><div class="galeria-img-container" onclick="abrirLightbox('duchas', 'Duchas', 4)"><canvas class="galeria-canvas" data-src="OBRAS/DUCHAS/DUCHAS (2).png"></canvas></div></div>
+                    </div>
+                </div>
+                <div class="col-lg-4 bg-secondary d-flex align-items-center">
+                    <div class="p-5 text-center text-lg-left">
+                        <h3 class="text-white text-uppercase">Duchas</h3>
+                        <p class="text-white-50">Cristal templado y acabados modernos para baños.</p>
+                        <button class="btn btn-outline-light mt-3" onclick="abrirLightbox('duchas', 'Duchas', 0)">Ver Galería</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-0 mb-4 mb-lg-5">
+                <div class="col-lg-8 bg-primary p-4">
+                    <div class="row">
+                        <div class="col-6 mb-3"><div class="galeria-img-container" onclick="abrirLightbox('mamparas', 'Sistema', 0)"><canvas class="galeria-canvas" data-src="OBRAS/MANPARAS/MANPARA SISTEMA/MANPARA SISTEMA (1).png"></canvas></div></div>
+                        <div class="col-6 mb-3"><div class="galeria-img-container" onclick="abrirLightbox('mamparas', 'Sistema', 1)"><canvas class="galeria-canvas" data-src="OBRAS/MANPARAS/MANPARA SISTEMA/MANPARA SISTEMA (2).png"></canvas></div></div>
+                        <div class="col-6"><div class="galeria-img-container" onclick="abrirLightbox('mamparas', 'Paflom', 0)"><canvas class="galeria-canvas" data-src="OBRAS/MANPARAS/MANPARA PAFLOM/MANPARA PAFLOM (1).png"></canvas></div></div>
+                        <div class="col-6"><div class="galeria-img-container" onclick="abrirLightbox('mamparas', 'Otros', 0)"><canvas class="galeria-canvas" data-src="OBRAS/MANPARAS/MANPARA OTROS (1).png"></canvas></div></div>
+                    </div>
+                </div>
+                <div class="col-lg-4 bg-secondary d-flex align-items-center">
+                    <div class="p-5 text-center text-lg-left">
+                        <h3 class="text-white text-uppercase">Mamparas</h3>
+                        <p class="text-white-50">Divisiones de vidrio para optimizar interiores.</p>
+                        <button class="btn btn-outline-light mt-3" onclick="abrirLightbox('mamparas', 'Sistema', 0)">Ver Galería</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-0 mb-4 mb-lg-5 flex-lg-row-reverse">
+                <div class="col-lg-8 bg-primary p-4">
+                    <div class="row">
+                        <div class="col-6 mb-3"><div class="galeria-img-container" onclick="abrirLightbox('puertas', 'Puertas', 0)"><canvas class="galeria-canvas" data-src="OBRAS/PUERTAS/PUERTAS (1).png"></canvas></div></div>
+                        <div class="col-6 mb-3"><div class="galeria-img-container" onclick="abrirLightbox('puertas', 'Puertas', 1)"><canvas class="galeria-canvas" data-src="OBRAS/PUERTAS/PUERTAS (2).png"></canvas></div></div>
+                        <div class="col-6"><div class="galeria-img-container" onclick="abrirLightbox('puertas', 'Puertas', 2)"><canvas class="galeria-canvas" data-src="OBRAS/PUERTAS/PUERTAS (3).png"></canvas></div></div>
+                        <div class="col-6"><div class="galeria-img-container" onclick="abrirLightbox('puertas', 'Puertas', 3)"><canvas class="galeria-canvas" data-src="OBRAS/PUERTAS/PUERTAS (4).png"></canvas></div></div>
+                    </div>
+                </div>
+                <div class="col-lg-4 bg-secondary d-flex align-items-center">
+                    <div class="p-5 text-center text-lg-left">
+                        <h3 class="text-white text-uppercase">Puertas</h3>
+                        <p class="text-white-50">Ingresos elegantes en cristal templado de seguridad.</p>
+                        <button class="btn btn-outline-light mt-3" onclick="abrirLightbox('puertas', 'Puertas', 0)">Ver Galería</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-0 mb-4 mb-lg-5">
+                <div class="col-lg-8 bg-primary p-4">
+                    <div class="row">
+                        <div class="col-6 mb-3"><div class="galeria-img-container" onclick="abrirLightbox('escritorios', 'Escritorios', 0)"><canvas class="galeria-canvas" data-src="OBRAS/ESCRITORIOS/ESCRITORIOS (1).png"></canvas></div></div>
+                        <div class="col-6 mb-3"><div class="galeria-img-container" onclick="abrirLightbox('escritorios', 'Escritorios', 1)"><canvas class="galeria-canvas" data-src="OBRAS/ESCRITORIOS/ESCRITORIOS (2).png"></canvas></div></div>
+                        <div class="col-6"><div class="galeria-img-container" onclick="abrirLightbox('escritorios', 'Escritorios', 2)"><canvas class="galeria-canvas" data-src="OBRAS/ESCRITORIOS/ESCRITORIOS (3).png"></canvas></div></div>
+                        <div class="col-6"><div class="galeria-img-container" onclick="abrirLightbox('escritorios', 'Escritorios', 3)"><canvas class="galeria-canvas" data-src="OBRAS/ESCRITORIOS/ESCRITORIOS (4).png"></canvas></div></div>
+                    </div>
+                </div>
+                <div class="col-lg-4 bg-secondary d-flex align-items-center">
+                    <div class="p-5 text-center text-lg-left">
+                        <h3 class="text-white text-uppercase">Escritorios</h3>
+                        <p class="text-white-50">Mobiliario minimalista con superficies de alta calidad.</p>
+                        <button class="btn btn-outline-light mt-3" onclick="abrirLightbox('escritorios', 'Escritorios', 0)">Ver Galería</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-0 mb-4 mb-lg-5 flex-lg-row-reverse">
+                <div class="col-lg-8 bg-primary p-4">
+                    <div class="row">
+                        <div class="col-6 mb-3"><div class="galeria-img-container" onclick="abrirLightbox('pasamanos', 'Pasamanos', 0)"><canvas class="galeria-canvas" data-src="OBRAS/PASAMANOS/PASAMANOS (1).png"></canvas></div></div>
+                        <div class="col-6 mb-3"><div class="galeria-img-container" onclick="abrirLightbox('pasamanos', 'Pasamanos', 1)"><canvas class="galeria-canvas" data-src="OBRAS/PASAMANOS/PASAMANOS (2).png"></canvas></div></div>
+                        <div class="col-12"><div class="galeria-img-container" onclick="abrirLightbox('pasamanos', 'Pasamanos', 2)"><canvas class="galeria-canvas" data-src="OBRAS/PASAMANOS/PASAMANOS (3).png"></canvas></div></div>
+                    </div>
+                </div>
+                <div class="col-lg-4 bg-secondary d-flex align-items-center">
+                    <div class="p-5 text-center text-lg-left">
+                        <h3 class="text-white text-uppercase">Pasamanos</h3>
+                        <p class="text-white-50">Seguridad y diseño para tus escaleras y balcones.</p>
+                        <button class="btn btn-outline-light mt-3" onclick="abrirLightbox('pasamanos', 'Pasamanos', 0)">Ver Galería</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-0 mb-4 mb-lg-5">
+                <div class="col-lg-8 bg-primary p-4">
+                    <div class="row">
+                        <div class="col-6 mb-3"><div class="galeria-img-container" onclick="abrirLightbox('accesorios', 'Accesorios', 0)"><canvas class="galeria-canvas" data-src="OBRAS/ACESORIOS/ACESORIOS MANPARAS (1).png"></canvas></div></div>
+                        <div class="col-6 mb-3"><div class="galeria-img-container" onclick="abrirLightbox('accesorios', 'Accesorios', 1)"><canvas class="galeria-canvas" data-src="OBRAS/ACESORIOS/ACESORIOS MANPARAS (2).png"></canvas></div></div>
+                        <div class="col-6"><div class="galeria-img-container" onclick="abrirLightbox('accesorios', 'Accesorios', 2)"><canvas class="galeria-canvas" data-src="OBRAS/ACESORIOS/ACESORIOS MANPARAS (3).png"></canvas></div></div>
+                        <div class="col-6"><div class="galeria-img-container" onclick="abrirLightbox('accesorios', 'Accesorios', 4)"><canvas class="galeria-canvas" data-src="OBRAS/ACESORIOS/ACESORIOS MANPARAS (4).png"></canvas></div></div>
+                    </div>
+                </div>
+                <div class="col-lg-4 bg-secondary d-flex align-items-center">
+                    <div class="p-5 text-center text-lg-left">
+                        <h3 class="text-white text-uppercase">Accesorios</h3>
+                        <p class="text-white-50">Herrajes y repuestos de alta durabilidad para tus proyectos.</p>
+                        <button class="btn btn-outline-light mt-3" onclick="abrirLightbox('accesorios', 'Accesorios', 0)">Ver Galería</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="text-center pb-5" style="background-color: #000;">
+        <a href="editor.html" class="btn-admin">
+            <i class="fas fa-sliders-h"></i> Ir al Editor de Galería
+        </a>
+    </div>
+
+    <div id="contenedor-footer"></div>
+
+    <div id="lightbox" class="lightbox-overlay" onclick="cerrarLightbox(event)">
+        <span class="lightbox-close" onclick="cerrarLightbox(event, true)">&times;</span>
+        
+        <div id="lightbox-tabs" class="lightbox-tabs" onclick="event.stopPropagation()"></div>
+
+        <span class="lightbox-btn lightbox-prev" onclick="cambiarImagen(-1, event)"><i class="fas fa-chevron-left"></i></span>
+        <span class="lightbox-btn lightbox-next" onclick="cambiarImagen(1, event)"><i class="fas fa-chevron-right"></i></span>
+        
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="Imagen ampliada">
+        </div>
+        
+        <div id="lightbox-thumbnails" class="lightbox-thumbnails" onclick="event.stopPropagation()"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="menu-dinamico.js"></script>
+    <script src="footer-dinamico.js"></script>
+
+    <script>
+        // ==========================================
+        // BASE DE DATOS ORGANIZADA CON SUBCATEGORÍAS Y TODAS TUS OBRAS
+        // ==========================================
+        const galeriaDatos = {
+            'ventanas': {
+                'Sistema': [
+                    'OBRAS/VENTANAS/VENTANAS SISTEMA/VENTANAS SISTEMA (1).png', 'OBRAS/VENTANAS/VENTANAS SISTEMA/VENTANAS SISTEMA (2).png', 'OBRAS/VENTANAS/VENTANAS SISTEMA/VENTANAS SISTEMA (3).png', 'OBRAS/VENTANAS/VENTANAS SISTEMA/VENTANAS SISTEMA (4).png', 'OBRAS/VENTANAS/VENTANAS SISTEMA/VENTANAS SISTEMA (5).png'
+                ],
+                'Estructura': [
+                    'OBRAS/VENTANAS/VENTANAS ESTRUCTURA/VENTANAS ESTRUCTURA (1).png', 'OBRAS/VENTANAS/VENTANAS ESTRUCTURA/VENTANAS ESTRUCTURA (2).png', 'OBRAS/VENTANAS/VENTANAS ESTRUCTURA/VENTANAS ESTRUCTURA (3).png', 'OBRAS/VENTANAS/VENTANAS ESTRUCTURA/VENTANAS ESTRUCTURA (4).png', 'OBRAS/VENTANAS/VENTANAS ESTRUCTURA/VENTANAS ESTRUCTURA (5).png', 'OBRAS/VENTANAS/VENTANAS ESTRUCTURA/VENTANAS ESTRUCTURA 1 (1).jpg', 'OBRAS/VENTANAS/VENTANAS ESTRUCTURA/VENTANAS ESTRUCTURA 1 (2).jpg', 'OBRAS/VENTANAS/VENTANAS ESTRUCTURA/VENTANAS ESTRUCTURA 1 (3).jpg'
+                ],
+                'Con Marco': [
+                    'OBRAS/VENTANAS/VENTANAS CON MARCO/VENTANAS CON MARCO (1).png', 'OBRAS/VENTANAS/VENTANAS CON MARCO/VENTANAS CON MARCO (2).png'
+                ],
+                'Otros': [
+                    'OBRAS/VENTANAS/VENTANA OTROS (1).png', 'OBRAS/VENTANAS/VENTANA OTROS (2).png', 'OBRAS/VENTANAS/VENTANA OTROS (3).png', 'OBRAS/VENTANAS/VENTANA OTROS (4).png'
+                ]
+            },
+            'duchas': {
+                'Duchas': [
+                    'OBRAS/DUCHAS/DUCHAS PUERTA (1).jpg', 'OBRAS/DUCHAS/DUCHAS PUERTA (2).jpg', 'OBRAS/DUCHAS/DUCHAS PUERTA (3).jpg', 'OBRAS/DUCHAS/DUCHAS (1).png', 'OBRAS/DUCHAS/DUCHAS (2).png', 'OBRAS/DUCHAS/DUCHAS (3).png', 'OBRAS/DUCHAS/DUCHAS (4).png', 'OBRAS/DUCHAS/DUCHAS (5).png', 'OBRAS/DUCHAS/DUCHAS (6).png'
+                ]
+            },
+            'mamparas': {
+                'Sistema': [
+                    'OBRAS/MANPARAS/MANPARA SISTEMA/MANPARA SISTEMA (1).png', 'OBRAS/MANPARAS/MANPARA SISTEMA/MANPARA SISTEMA (2).png', 'OBRAS/MANPARAS/MANPARA SISTEMA/MANPARA SISTEMA (3).png', 'OBRAS/MANPARAS/MANPARA SISTEMA/MANPARA SISTEMA (4).png', 'OBRAS/MANPARAS/MANPARA SISTEMA/MANPARA SISTEMA (5).png', 'OBRAS/MANPARAS/MANPARA SISTEMA/MANPARA SISTEMA (6).png'
+                ],
+                'Paflom': [
+                    'OBRAS/MANPARAS/MANPARA PAFLOM/MANPARA PAFLOM (1).png', 'OBRAS/MANPARAS/MANPARA PAFLOM/MANPARA PAFLOM (2).png', 'OBRAS/MANPARAS/MANPARA PAFLOM/MANPARA PAFLOM (3).png', 'OBRAS/MANPARAS/MANPARA PAFLOM/MANPARA PAFLOM (4).png', 'OBRAS/MANPARAS/MANPARA PAFLOM/MANPARA PAFLOM (5).png', 'OBRAS/MANPARAS/MANPARA PAFLOM/MANPARA PAFLOM (6).png', 'OBRAS/MANPARAS/MANPARA PAFLOM/MANPARA PAFLOM (7).png'
+                ],
+                'Otros': [
+                    'OBRAS/MANPARAS/MANPARA OTROS (1).png', 'OBRAS/MANPARAS/MANPARA OTROS (2).png', 'OBRAS/MANPARAS/MANPARA OTROS (3).png'
+                ]
+            },
+            'puertas': {
+                'Puertas': [
+                    'OBRAS/PUERTAS/PUERTAS (1).png', 'OBRAS/PUERTAS/PUERTAS (2).png', 'OBRAS/PUERTAS/PUERTAS (3).png', 'OBRAS/PUERTAS/PUERTAS (4).png', 'OBRAS/PUERTAS/PUERTAS (5).png', 'OBRAS/PUERTAS/PUERTAS (6).png', 'OBRAS/PUERTAS/PUERTAS (7).png', 'OBRAS/PUERTAS/PUERTAS (8).png', 'OBRAS/PUERTAS/PUERTAS (9).png', 'OBRAS/PUERTAS/PUERTAS (10).png', 'OBRAS/PUERTAS/PUERTAS (11).png', 'OBRAS/PUERTAS/PUERTAS (12).png', 'OBRAS/PUERTAS/PUERTAS (13).png', 'OBRAS/PUERTAS/PUERTAS (14).png', 'OBRAS/PUERTAS/PUERTAS (15).png', 'OBRAS/PUERTAS/PUERTAS (16).png', 'OBRAS/PUERTAS/PUERTAS (17).png', 'OBRAS/PUERTAS/PUERTAS (18).png', 'OBRAS/PUERTAS/PUERTAS (19).png', 'OBRAS/PUERTAS/PUERTAS (20).png'
+                ]
+            },
+            'escritorios': {
+                'Escritorios': [
+                    'OBRAS/ESCRITORIOS/ESCRITORIOS (1).png', 'OBRAS/ESCRITORIOS/ESCRITORIOS (2).png', 'OBRAS/ESCRITORIOS/ESCRITORIOS (3).png', 'OBRAS/ESCRITORIOS/ESCRITORIOS (4).png', 'OBRAS/ESCRITORIOS/ESCRITORIOS (5).png', 'OBRAS/ESCRITORIOS/ESCRITORIOS (6).png', 'OBRAS/ESCRITORIOS/ESCRITORIOS (7).png'
+                ]
+            },
+            'pasamanos': {
+                'Pasamanos': [
+                    'OBRAS/PASAMANOS/PASAMANOS (1).png', 'OBRAS/PASAMANOS/PASAMANOS (2).png', 'OBRAS/PASAMANOS/PASAMANOS (3).png'
+                ]
+            },
+            'accesorios': {
+                'Accesorios': [
+                    'OBRAS/ACESORIOS/ACESORIOS MANPARAS (1).png', 'OBRAS/ACESORIOS/ACESORIOS MANPARAS (2).png', 'OBRAS/ACESORIOS/ACESORIOS MANPARAS (3).png', 'OBRAS/ACESORIOS/ACESORIOS MANPARAS (4).png', 'OBRAS/ACESORIOS/ACESORIOS MANPARAS (5).png'
+                ]
+            }
+        };
+
+        let catActiva = '';
+        let subCatActiva = '';
+        let indiceActivo = 0;
+
+        function abrirLightbox(categoria, subcategoria, index) {
+            catActiva = categoria;
+            subCatActiva = subcategoria;
+            indiceActivo = index;
+
+            generarPestanas();
+            cargarMiniaturas();
+            actualizarImagen();
+
+            const lightbox = document.getElementById('lightbox');
+            lightbox.style.display = 'flex';
+            setTimeout(() => { lightbox.classList.add('show'); }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function generarPestanas() {
+            const tabsContainer = document.getElementById('lightbox-tabs');
+            tabsContainer.innerHTML = '';
+            const subcategorias = Object.keys(galeriaDatos[catActiva]);
+
+            if (subcategorias.length > 1) {
+                tabsContainer.style.display = 'flex';
+                subcategorias.forEach(sub => {
+                    const btn = document.createElement('button');
+                    btn.className = 'lightbox-tab-btn' + (sub === subCatActiva ? ' active' : '');
+                    btn.innerText = sub;
+                    btn.onclick = (e) => { 
+                        e.stopPropagation(); 
+                        cambiarSubcategoria(sub); 
+                    };
+                    tabsContainer.appendChild(btn);
+                });
+            } else {
+                tabsContainer.style.display = 'none';
+            }
+        }
+
+        function cambiarSubcategoria(subcategoria) {
+            subCatActiva = subcategoria;
+            indiceActivo = 0;
+            
+            document.querySelectorAll('.lightbox-tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText === subcategoria);
+            });
+
+            cargarMiniaturas();
+            actualizarImagen();
+        }
+
+        function cargarMiniaturas() {
+            const thumbsContainer = document.getElementById('lightbox-thumbnails');
+            thumbsContainer.innerHTML = ''; 
+            galeriaDatos[catActiva][subCatActiva].forEach((src, i) => {
+                const img = document.createElement('img');
+                img.src = src;
+                img.className = 'thumb-mini';
+                img.onclick = (e) => saltarAImagen(i, e);
+                thumbsContainer.appendChild(img);
+            });
+        }
+
+        function cerrarLightbox(event, forzar = false) {
+            if (forzar || event.target.id === 'lightbox') {
+                const lightbox = document.getElementById('lightbox');
+                lightbox.classList.remove('show');
+                setTimeout(() => { lightbox.style.display = 'none'; }, 300);
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function cambiarImagen(direccion, event) {
+            if(event) event.stopPropagation(); 
+            const arr = galeriaDatos[catActiva][subCatActiva];
+            indiceActivo = (indiceActivo + direccion + arr.length) % arr.length;
+            actualizarImagen();
+        }
+
+        function saltarAImagen(index, event) {
+            if(event) event.stopPropagation();
+            indiceActivo = index;
+            actualizarImagen();
+        }
+
+        function actualizarImagen() {
+            const img = document.getElementById('lightbox-img');
+            img.style.opacity = '0'; 
+            setTimeout(() => {
+                img.src = galeriaDatos[catActiva][subCatActiva][indiceActivo];
+                img.style.opacity = '1';
+            }, 100); 
+
+            const thumbs = document.querySelectorAll('.thumb-mini');
+            thumbs.forEach((thumb, index) => {
+                if (index === indiceActivo) {
+                    thumb.classList.add('active');
+                    thumb.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+                } else {
+                    thumb.classList.remove('active');
+                }
+            });
+        }
+
+        function renderizarCanvases() {
+            const canvases = document.querySelectorAll('.galeria-canvas');
+            canvases.forEach(canvas => {
+                const ctx = canvas.getContext('2d');
+                const src = canvas.getAttribute("data-src");
+                const img = new Image();
+                canvas.width = 800; canvas.height = 600;
+                img.onload = function() {
+                    const datosGuardados = localStorage.getItem("vidrieria_" + src);
+                    let x = 0, y = 0, z = 1;
+
+                    if (datosGuardados) {
+                        const datos = JSON.parse(datosGuardados);
+                        x = parseInt(datos.x);
+                        y = parseInt(datos.y);
+                        z = parseFloat(datos.z);
+                    }
+
+                    ctx.save();
+                    ctx.filter = 'blur(15px) brightness(0.9)'; 
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    ctx.restore();
+
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    const aspect = img.width / img.height;
+                    let drawW = canvas.width * z;
+                    let drawH = (canvas.width / aspect) * z;
+                    const drawX = (canvas.width - drawW) / 2 + x;
+                    const drawY = (canvas.height - drawH) / 2 + y;
+
+                    ctx.shadowBlur = 20;
+                    ctx.shadowColor = "rgba(0,0,0,0.3)";
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(img, drawX, drawY, drawW, drawH);
+                };
+                img.src = src;
+            });
+        }
+        document.addEventListener("DOMContentLoaded", renderizarCanvases);
+    </script>
+</body>
+</html>

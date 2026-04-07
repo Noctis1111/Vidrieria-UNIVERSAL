@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Puertas - VIDRIERÍA UNIVERSAL</title>
+    
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet" />
+    <link href="css/styles.css" rel="stylesheet" />
+    
+    <style>
+            body {
+	    display: flex;
+	    flex-direction: column;
+	    min-height: 211vh;
+		}
+		#contenedor-footer {
+		    margin-top: auto;
+		}
+
+        body {
+            background-color: #000;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 50%, #000 100%), 
+                        url("assets/img/bg-masthead.jpg");
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            font-family: 'Varela Round', sans-serif;
+        }
+
+        header.masthead {
+            background: transparent !important;
+            height: 25vh !important;
+            min-height: 200px !important;
+            padding-top: 80px !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        header.masthead h1 {
+            font-size: 4rem !important;
+            letter-spacing: 0.5rem;
+            margin-top: 20px !important;
+            position: relative;
+            z-index: 50;
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.2));
+            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .card-custom { 
+            background: rgba(0, 0, 0, 0.85) !important; 
+            border: 1px solid rgba(255, 255, 255, 0.1) !important; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            color: white !important;
+        }
+
+        .section-subida {
+            margin-top: -0px !important;
+            position: relative;
+            z-index: 10;
+            padding-bottom: 5rem;
+        }
+
+        .btn-primary { background-color: #64a19d; border-color: #64a19d; }
+        .btn-primary:disabled { background-color: #3e5a58; border-color: #3e5a58; opacity: 0.5; }
+        .btn-outline-primary { color: #64a19d; border-color: #64a19d; }
+        .btn-check:checked + .btn-outline-primary { background-color: #64a19d !important; color: white !important; }
+        .form-control { background-color: #1a1a1a !important; border: 1px solid #333 !important; color: white !important; }
+        
+        .group-label { font-size: 0.75rem; color: #64a19d; text-transform: uppercase; margin-bottom: 5px; display: block; margin-top: 10px; }
+        
+        .resumen-titulo { 
+            font-size: 0.8rem; 
+            color: #64a19d; 
+            border-bottom: 1px solid #333; 
+            padding-bottom: 3px; 
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        #mensaje-error-config {
+            border: 1px dashed #64a19d;
+            background: rgba(100, 161, 157, 0.1);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body id="page-top">
+
+    <div id="contenedor-menu"></div>
+
+    <header class="masthead">
+        <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+            <div class="text-center">
+                <h1 class="mx-auto my-0 text-uppercase">Puertas</h1>
+            </div>
+        </div>
+    </header>
+
+    <section class="container px-4 px-lg-5 section-subida">
+        <div class="row gx-5">
+            <div class="col-md-6 mb-4">
+                <div class="card card-custom p-4 shadow">
+                    <h4 class="text-white text-center mb-4">Configuración de Puertas</h4>
+                    
+                    <div id="contenedor-formulario">
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label text-white-50 small">Altura (cm):</label>
+                                <input type="number" class="form-control form-control-lg" id="altura" placeholder="0">
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label text-white-50 small">Ancho (cm):</label>
+                                <input type="number" class="form-control form-control-lg" id="ancho" placeholder="0">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="text-white-50 small mb-3">Seleccionar Producto:</h6>
+                            
+                            <span class="group-label">PUERTAS</span>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <input type="radio" class="btn-check" name="tipoProducto" id="p_auto" checked onchange="validarSeleccion()">
+                                <label class="btn btn-outline-primary btn-sm" for="p_auto" id="lbl-p_auto">1 puerta</label>
+                            </div>
+
+                            <span class="group-label">PUERTA Y MANPARA CON PAFLON</span>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <input type="radio" class="btn-check" name="tipoProducto" id="p3" data-nombre="1 P. M. con paflon" onchange="validarSeleccion()">
+                                <label class="btn btn-outline-primary btn-sm" for="p3" id="lbl-p3">1 P. M. con paflon</label>
+                            </div>
+
+                            <span class="group-label">MANPARA</span>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <input type="radio" class="btn-check" name="tipoProducto" id="p4" data-nombre="1 manpara TRIPLE-ESTRUCTURA" onchange="validarSeleccion()">
+                                <label class="btn btn-outline-primary btn-sm" for="p4" id="lbl-p4">1 manpara TRIPLE-ESTRUCTURA</label>
+                                
+                                <input type="radio" class="btn-check" name="tipoProducto" id="p5" data-nombre="2 MANPARA 8MM-SISTEMA" onchange="validarSeleccion()">
+                                <label class="btn btn-outline-primary btn-sm" for="p5" id="lbl-p5">2 MANPARA 8MM-SISTEMA</label>
+                            </div>
+
+                            <span class="group-label">DUCHAS</span>
+                            <div class="d-flex flex-wrap gap-2">
+                                <input type="radio" class="btn-check" name="tipoProducto" id="p6" data-nombre="PUERTA DUCHA" onchange="validarSeleccion()">
+                                <label class="btn btn-outline-primary btn-sm" for="p6" id="lbl-p6">PUERTA DUCHA</label>
+                            </div>
+                        </div>
+
+                        <div id="mensaje-error-config" class="p-3 text-center d-none mb-4">
+                            <p class="text-white small mb-2">Faltan precios de este producto en la configuración.</p>
+                            <button class="btn btn-primary w-100 fw-bold" onclick="window.location.href='config.html'">CONFIGURAR</button>
+                        </div>
+
+                        <div class="text-center mb-4">
+                            <h5 class="text-white bg-black p-3 rounded border border-secondary" id="resultado">Costo: S/. 0.00</h5>
+                        </div>
+                        <div class="d-grid">
+                            <button id="btn-anadir" class="btn btn-primary btn-lg text-uppercase fw-bold" onclick="guardarPedido()">Añadir a Pedido</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card card-custom p-4 shadow h-100">
+                    <h4 class="text-white text-center mb-4">Resumen de Materiales</h4>
+                    <div style="max-height: 450px; overflow-y: auto;" class="px-2">
+                        <div class="resumen-titulo">PUERTAS:</div>
+                        <ul id="listaPuertas" class="list-unstyled mb-3 text-white-50 small"></ul>
+                        
+                        <div class="resumen-titulo">CON PAFLON:</div>
+                        <ul id="listaPaflon" class="list-unstyled mb-3 text-white-50 small"></ul>
+                        
+                        <div class="resumen-titulo">MANPARAS:</div>
+                        <ul id="listaMamparas" class="list-unstyled mb-3 text-white-50 small"></ul>
+
+                        <div class="resumen-titulo">DUCHAS:</div>
+                        <ul id="listaDuchas" class="list-unstyled mb-3 text-white-50 small"></ul>
+                    </div>
+                    <div class="mt-auto pt-3 border-top border-secondary text-center">
+                        <h4 id="totalGuardado" class="text-white">Total: S/. 0.00</h4>
+                        <button class="btn btn-sm btn-link text-danger mt-2 text-decoration-none" onclick="limpiarTodo()">BORRAR TODO</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="contenedor-footer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="menu-dinamico.js"></script>
+    <script src="footer-dinamico.js"></script>
+
+    <script>
+        let preciosPuertas = {};
+        let pedidos = [];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const ids = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'];
+            
+            ids.forEach(id => {
+                const val = localStorage.getItem(`precio_${id}`);
+                preciosPuertas[id] = (val && parseFloat(val) > 0) ? parseFloat(val) : 0;
+            });
+
+            // Asignar textos estáticos a los botones que no dependen del ancho
+            const labels = {
+                p3: 'P. M. con paflon',
+                p4: 'manpara TRIPLE-ESTRUCTURA', 
+                p5: 'MANPARA 8MM-SISTEMA',
+                p6: 'PUERTA DUCHA'
+            };
+
+            ['p3', 'p4', 'p5', 'p6'].forEach(id => {
+                document.getElementById(`lbl-${id}`).innerText = `${labels[id]} (S/. ${preciosPuertas[id].toFixed(2)})`;
+            });
+
+            actualizarLabelPuerta();
+        });
+
+        // Lógica automática para la Puerta dependiendo del ancho (como Vitrinas)
+        function actualizarLabelPuerta() {
+            const ancho = parseFloat(document.getElementById('ancho').value) || 0;
+            const lbl = document.getElementById('lbl-p_auto');
+            
+            if (ancho <= 0) {
+                lbl.innerText = `puerta (S/. ${preciosPuertas.p2.toFixed(2)} - ${preciosPuertas.p1.toFixed(2)})`;
+            } else if (ancho <= 65) {
+                lbl.innerText = `1 puerta (Pequeña) (S/. ${preciosPuertas.p2.toFixed(2)})`;
+            } else {
+                lbl.innerText = `1 puerta (Grande) (S/. ${preciosPuertas.p1.toFixed(2)})`;
+            }
+            validarSeleccion();
+            recalcular();
+        }
+
+        function validarSeleccion() {
+            const seleccionado = document.querySelector('input[name="tipoProducto"]:checked');
+            const alertBox = document.getElementById('mensaje-error-config');
+            const btnAnadir = document.getElementById('btn-anadir');
+            const ancho = parseFloat(document.getElementById('ancho').value) || 0;
+
+            let precioActivo = 0;
+
+            if (seleccionado) {
+                if (seleccionado.id === 'p_auto') {
+                    // Si el ancho está vacío, exigimos que al menos existan los precios para no bloquear
+                    if (ancho <= 0) {
+                        precioActivo = (preciosPuertas.p1 > 0 && preciosPuertas.p2 > 0) ? 1 : 0;
+                    } else if (ancho <= 65) {
+                        precioActivo = preciosPuertas.p2;
+                    } else {
+                        precioActivo = preciosPuertas.p1;
+                    }
+                } else {
+                    precioActivo = preciosPuertas[seleccionado.id];
+                }
+            }
+
+            if (precioActivo > 0) {
+                alertBox.classList.add('d-none');
+                btnAnadir.disabled = false;
+            } else {
+                alertBox.classList.remove('d-none');
+                btnAnadir.disabled = true;
+                document.getElementById('resultado').innerHTML = "Costo: S/. 0.00";
+            }
+        }
+
+        function calcularPrecio() {
+            const h = parseFloat(document.getElementById('altura').value);
+            const a = parseFloat(document.getElementById('ancho').value);
+            const sel = document.querySelector('input[name="tipoProducto"]:checked');
+            
+            if (!h || !a || h <= 0 || a <= 0 || !sel) return null;
+
+            let precioFinal = 0;
+            let nombreFinal = "";
+            let catLista = "";
+
+            if (sel.id === 'p_auto') {
+                if (a <= 65) {
+                    precioFinal = preciosPuertas.p2;
+                    nombreFinal = "1 puerta (Pequeña)";
+                } else {
+                    precioFinal = preciosPuertas.p1;
+                    nombreFinal = "1 puerta (Grande)";
+                }
+                catLista = "listaPuertas";
+            } else {
+                precioFinal = preciosPuertas[sel.id];
+                nombreFinal = sel.getAttribute('data-nombre');
+                
+                if (sel.id === 'p3') catLista = "listaPaflon";
+                else if (sel.id === 'p4' || sel.id === 'p5') catLista = "listaMamparas";
+                else if (sel.id === 'p6') catLista = "listaDuchas";
+            }
+
+            if (precioFinal <= 0) return null;
+
+            const costo = ((h * a) / 900) * precioFinal;
+            return { h, a, costo, nombre: nombreFinal, categoriaLista: catLista };
+        }
+
+        function recalcular() {
+            const p = calcularPrecio();
+            document.getElementById('resultado').innerHTML = p ? `Costo: S/. ${p.costo.toFixed(2)}` : "Costo: S/. 0.00";
+        }
+
+        document.getElementById('altura').addEventListener('input', recalcular);
+        document.getElementById('ancho').addEventListener('input', actualizarLabelPuerta);
+
+        // PROTOCOLO: No borra valores, devuelve foco a la primera medida (altura)
+        function guardarPedido() {
+            const p = calcularPrecio();
+            if (p) {
+                pedidos.push(p);
+                actualizarInterfaz();
+                const inputAltura = document.getElementById('altura');
+                inputAltura.focus();
+                inputAltura.select();
+            }
+        }
+
+        function actualizarInterfaz() {
+            const listas = {
+                "listaPuertas": document.getElementById('listaPuertas'),
+                "listaPaflon": document.getElementById('listaPaflon'),
+                "listaMamparas": document.getElementById('listaMamparas'),
+                "listaDuchas": document.getElementById('listaDuchas')
+            };
+
+            Object.values(listas).forEach(ul => { if(ul) ul.innerHTML = ''; });
+
+            pedidos.forEach((item, i) => {
+                const ul = listas[item.categoriaLista];
+                if (ul) {
+                    const li = document.createElement('li');
+                    li.className = "d-flex justify-content-between border-bottom border-dark py-1";
+                    li.innerHTML = `<span>${i+1}. ${item.nombre} (${item.a}x${item.h})</span> <span>S/. ${item.costo.toFixed(2)}</span>`;
+                    ul.appendChild(li);
+                }
+            });
+
+            const total = pedidos.reduce((acc, curr) => acc + curr.costo, 0);
+            document.getElementById('totalGuardado').innerHTML = `Total: S/. ${total.toFixed(2)}`;
+        }
+
+        function limpiarTodo() {
+            if(confirm("¿Vaciar la lista de pedidos?")) {
+                pedidos = [];
+                actualizarInterfaz();
+            }
+        }
+    </script>
+</body>
+</html>
